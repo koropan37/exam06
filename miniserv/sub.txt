@@ -1,0 +1,100 @@
+Assignment name  : mini_serv
+Expected files   : mini_serv.c
+Allowed functions: write, close, select, socket, accept, listen, send, recv, bind, strstr, malloc, realloc, free, calloc, bzero, atoi, sprintf, strlen, exit, strcpy, strcat, memset
+--------------------------------------------------------------------------------
+
+Write a program that will listen for client to connect on a certain port on 127.0.0.1 and will let clients to speak with each other
+
+This program will take as first argument the port to bind to
+If no argument is given, it should write in stderr "Wrong number of arguments" followed by a \n and exit with status 1
+If a System Calls returns an error before the program start accepting connection, it should write in stderr "Fatal error" followed by a \n and exit with status 1
+If you cant allocate memory it should write in stderr "Fatal error" followed by a \n and exit with status 1
+
+Your program must be non-blocking but client can be lazy and if they don't read your message you must NOT disconnect them...
+
+Your program must not contains #define preproc
+Your program must only listen to 127.0.0.1
+The fd that you will receive will already be set to make 'recv' or 'send' to block if select hasn't be called before calling them, but will not block otherwise. 
+
+When a client connect to the server:
+- the client will be given an id. the first client will receive the id 0 and each new client will received the last client id + 1
+- %d will be replace by this number
+- a message is sent to all the client that was connected to the server: "server: client %d just arrived\n"
+
+clients must be able to send messages to your program.
+- message will only be printable characters, no need to check
+- a single message can contains multiple \n
+- when the server receive a message, it must resend it to all the other client with "client %d: " before every line!
+
+When a client disconnect from the server:
+- a message is sent to all the client that was connected to the server: "server: client %d just left\n"
+
+Memory or fd leaks are forbidden
+
+To help you, you will find the file main.c with the beginning of a server and maybe some useful functions. (Beware this file use forbidden functions or write things that must not be there in your final program)
+
+Warning our tester is expecting that you send the messages as fast as you can. Don't do un-necessary buffer.
+
+Evaluation can be a bit longer than usual...
+
+Hint: you can use nc to test your program
+Hint: you should use nc to test your program
+Hint: To test you can use fcntl(fd, F_SETFL, O_NONBLOCK) but use select and NEVER check EAGAIN (man 2 send)
+
+127.0.0.1の特定のポートでクライアントの接続をリッスンし、クライアント同士で会話できるようにするプログラムを作成してください。
+
+このプログラムは、バインドするポートを第1引数として受け取ります。
+
+引数が与えられなかった場合、標準エラー出力（stderr）に "Wrong number of arguments" と \n を書き込み、ステータス1で終了する必要があります。
+
+プログラムが接続の受け入れを開始する前にシステムコールがエラーを返した場合、標準エラー出力に "Fatal error" と \n を書き込み、ステータス1で終了する必要があります。
+
+メモリの割り当てができない場合、標準エラー出力に "Fatal error" と \n を書き込み、ステータス1で終了する必要があります。
+
+プログラムはノンブロッキングである必要がありますが、クライアントの応答が遅く、あなたが送信したメッセージをすぐに読まなかったとしても、クライアントを切断してはいけません。
+
+プログラムに #define プリプロセッサを含めてはいけません。
+
+プログラムは 127.0.0.1 のみをリッスンする必要があります。
+
+受け取るファイルディスクリプタ（fd）は、事前に select を呼び出さずに recv や send を呼び出すとブロックされるように設定されていますが、そうでない場合（select で準備ができていることが確認された場合）はブロックされません。
+
+クライアントがサーバーに接続したとき：
+
+クライアントにはIDが与えられます。最初のクライアントはID 0 を受け取り、新しく接続するクライアントはそれぞれ「最後のクライアントのID + 1」を受け取ります。
+
+メッセージ内の %d はこの番号に置き換えられます。
+
+サーバーに接続されているすべてのクライアントに対して、以下のメッセージが送信されます：
+"server: client %d just arrived\n"
+
+クライアントはプログラムにメッセージを送信できる必要があります：
+
+メッセージは印刷可能な文字（printable characters）のみで構成されます（チェック機能は不要です）。
+
+1つのメッセージ内に複数の改行 \n が含まれる場合があります。
+
+サーバーがメッセージを受信した際、他のすべてのクライアントに対して、すべての行の先頭に "client %d: " を付けて再送信しなければなりません！
+
+クライアントがサーバーから切断したとき：
+
+サーバーに接続されていたすべてのクライアントに対して、以下のメッセージが送信されます：
+"server: client %d just left\n"
+
+その他・注意事項：
+
+メモリリークやファイルディスクリプタ（fd）のリークは禁止されています。
+
+助けとして、サーバーの初期部分や便利な関数が含まれている main.c というファイルが提供されます。（注意: このファイルには禁止されている関数が使用されていたり、最終的なプログラムには含めるべきではない記述が含まれている場合があります）。
+
+警告: 当方のテストシステムは、メッセージが可能な限り迅速に送信されることを想定しています。不要なバッファリングは行わないでください。
+
+評価には通常よりも少し時間がかかる場合があります。
+
+ヒント:
+
+プログラムのテストには nc（netcat）を使用できます。
+
+プログラムのテストには nc を使用するべきです。
+
+テストのために fcntl(fd, F_SETFL, O_NONBLOCK) を使用しても構いませんが、実装には select を使用し、絶対に EAGAIN の確認を行わないでください（man 2 send を参照）。
