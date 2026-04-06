@@ -73,7 +73,7 @@ int main(int ac, char **av) {
                 FD_SET(cfd, &all_fds);
                 sprintf(s_buf, "server: client %d just arrived\n", client[cfd].id);
                 send_all(cfd);
-                break;
+                continue;
             } else {
                 int n = recv(fd, r_buf, 100000, 0);
                 if (n <= 0) {
@@ -81,7 +81,7 @@ int main(int ac, char **av) {
                     send_all(fd);
                     FD_CLR(fd, &all_fds);
                     close(fd);
-                    break;
+                    continue;
                 }
                 r_buf[n] = '\0';
                 for (int i = 0; i < n; i++) {
