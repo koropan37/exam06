@@ -25,8 +25,9 @@ void err(char *msg) {
     exit(1);
 }
 
-void send_all(int except) {
+void send_all(int except) { //( + int sfd)
     for (int fd = 0; fd <= maxfd; fd++) {
+        //if(fd == sfd) continue;
         if (FD_ISSET(fd, &write_fds) && fd != except)
             send(fd, s_buf, strlen(s_buf), 0);
     }
@@ -72,13 +73,13 @@ int main(int ac, char **av) {
                 client[cfd].msg[0] = '\0';
                 FD_SET(cfd, &all_fds);
                 sprintf(s_buf, "server: client %d just arrived\n", client[cfd].id);
-                send_all(cfd);
+                send_all(cfd); //(+ sfd)
                 continue;
             } else {
                 int n = recv(fd, r_buf, 100000, 0);
                 if (n <= 0) {
                     sprintf(s_buf, "server: client %d just left\n", client[fd].id);
-                    send_all(fd);
+                    send_all(fd);//(+ sfd)
                     FD_CLR(fd, &all_fds);
                     close(fd);
                     continue;
@@ -90,7 +91,7 @@ int main(int ac, char **av) {
                     client[fd].msg[l+1] = '\0';
                     if (client[fd].msg[l] == '\n') {
                         sprintf(s_buf, "client %d: %s", client[fd].id, client[fd].msg);
-                        send_all(fd);
+                        send_all(fd);//(+ sfd)
                         client[fd].msg[0] = '\0';
                     }
                 }
