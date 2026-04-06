@@ -58,16 +58,12 @@ int main(int ac, char **av) {
         read_fds = write_fds = all_fds;
         if (select(maxfd + 1, &read_fds, &write_fds, 0, 0) == -1) 
             continue;
-
+            
         for (int fd = 0; fd <= maxfd; fd++) {
             if (!FD_ISSET(fd, &read_fds)) 
                 continue;
-
             if (fd == sfd) {
-                struct sockaddr_in c_sa;
-                socklen_t len = sizeof(c_sa);
-                int cfd = accept(sfd, (struct sockaddr *)&c_sa, &len);
-                
+                int cfd = accept(sfd, NULL, NULL);                
                 if (cfd == -1) 
                     continue;
                 if (cfd > maxfd) 

@@ -12,7 +12,7 @@ echo "=========================================="
 echo ""
 
 # Check if user file exists
-USER_C="./mini_serv.c"
+USER_C="./fix.c"
 
 if [ ! -f "$USER_C" ]; then
     echo -e "${RED}❌ User solution not found: $USER_C${NC}"
